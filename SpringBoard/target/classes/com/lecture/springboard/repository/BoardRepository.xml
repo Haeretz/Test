@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.lecture.springboard.repository.BoardRepository">
+
+	<select id="selectOne" parameterType="int" resultType="Board">
+		SELECT *
+		  FROM board
+		 WHERE num = #{num}
+	</select>
+	
+	<select id="selectList" parameterType="int" resultType="Board">
+		SELECT *
+		  FROM board
+		 ORDER BY re_ref DESC, re_seq
+		 LIMIT 10 OFFSET #{offset}
+	</select>
+	
+	<select id="selectCount" resultType="int">
+		SELECT COUNT(*)
+		  FROM board
+	</select>
+	
+	<insert id="insert" parameterType="Board">
+		<selectKey keyProperty="num" resultType="int" order="AFTER">
+			SELECT LAST_INSERT_ID();
+		</selectKey>
+		INSERT
+		  INTO board
+		     ( writer
+		     , password
+		     , title
+		     , content
+		     , re_ref
+		     , re_seq
+		     , re_level
+		     , read_count
+		     , reg_date
+		     )
+		VALUES
+		     ( #{writer}
+		     , #{password}
+		     , #{title}
+		     , #{content}
+		     , 0
+		     , 0
+		     , 0
+		     , 0
+		     , now()
+		     )
+	</insert>
+	
+	<update id="updateReRef" parameterType="int">
+		UPDATE board
+		   SET re_ref = #{reRef}
+		 WHERE num = #{num}
+	</update>
+	
+	<insert id="insertReply" parameterType="Board">
+		<selectKey keyProperty="num" resultType="int" order="AFTER">
+			SELECT LAST_INSERT_ID();
+		</selectKey>
+		INSERT
+		  INTO board
+		     ( writer
+		     , password
+		     , title
+		     , content
+		     , re_ref
+		     , re_seq
+		     , re_level
+		     , read_count
+		     , reg_date
+		     )
+		VALUES
+		     ( #{writer}
+		     , #{password}
+		     , #{title}
+		     , #{content}
+		     , #{reRef}
+		     , #{reSeq}
+		     , #{reLevel}
+		     , 0
+		     , now()
+		     )
+	</insert>
+	
+	<update id="updateReSeq" parameterType="hashmap">
+		UPDATE board
+		   SET re_seq = re_seq + 1
+		 WHERE re_ref = #{reRef}
+		   AND re_seq > #{reSeq}
+	</update>
+	
+	<update id="updateReadCount" parameterType="int">
+		UPDATE board
+		   SET read_count = read_count + 1
+		 WHERE num = #{num}
+	</update>	
+	
+	<update id="update" parameterType="Board">
+		UPDATE board
+		   SET title = #{title}
+		     , content = #{content}
+		 WHERE num = #{num}
+		   AND password = #{password}
+	</update>
+	
+	<delete id="delete" parameterType="Board">
+		DELETE
+		  FROM board
+		 WHERE num = #{num}
+		   AND password = #{password}
+	</delete>
+	
+</mapper>

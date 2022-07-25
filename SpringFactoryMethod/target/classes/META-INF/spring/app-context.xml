@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:c="http://www.springframework.org/schema/c"	xmlns:context="http://www.springframework.org/schema/context"
+	   xmlns:p="http://www.springframework.org/schema/p"	xmlns:util="http://www.springframework.org/schema/util"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans	http://www.springframework.org/schema/beans/spring-beans-3.2.xsd 
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.2.xsd">
+	
+	<!-- FacoryBean 정의 -->
+	<bean id="hiFactoryBean" class="com.spring.factory.MessageFactoryBean">
+		<property name="type">
+			<value>Hi</value>
+		</property>
+	</bean>
+	
+	<!-- FacoryBean 정의 -->
+	<bean id="helloFactoryBean" class="com.spring.factory.MessageFactoryBean">
+		<property name="type">
+			<value>Hello</value>
+		</property>
+	</bean>
+	
+	<!-- bean을 정의하고 factory-bean, factory-method 지정 -->
+	<bean id="hiProvider" factory-bean="hiFactoryBean" 		factory-method="getInstance"/>
+	
+	<bean id="helloProvider" factory-bean="helloFactoryBean" factory-method="getInstance"/>
+	
+	
+	<!-- 위에 적의된 FactoryBean을 주입을 통해 사용 -->
+	<bean id="messageRenderrer" class="com.message.render.MessageRederrer">
+		<property name="hiProvider">
+			<ref bean="hiProvider"/>
+		</property>
+		
+		<property name="helloProvider">
+			<ref bean="helloProvider"/>
+		</property>
+	</bean>
+	
+</beans>
+

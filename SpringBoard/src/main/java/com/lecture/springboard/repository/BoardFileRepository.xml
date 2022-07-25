@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.lecture.springboard.repository.BoardFileRepository">
+
+	<select id="selectOne" parameterType="int" resultType="BoardFile">
+		SELECT *
+		  FROM board_file
+		 WHERE num = #{num}
+	</select>
+	
+	<select id="selectList" parameterType="int" resultType="BoardFile">
+		SELECT *
+		  FROM board_file
+		 WHERE board_num = #{boardNum}
+	</select>
+	
+	<select id="selectCount" resultType="int">
+		SELECT COUNT(*)
+		  FROM boardFile
+	</select>
+	
+	<insert id="insert" parameterType="BoardFile">
+		INSERT
+		  INTO board_file
+		     ( board_num
+		     , name
+		     , path
+		     , reg_date
+		     )
+		VALUES
+		     ( #{boardNum}
+		     , #{name}
+		     , #{path}
+		     , now()
+		     )
+	</insert>
+	
+	<update id="update" parameterType="BoardFile">
+		UPDATE board_file
+		   SET name = #{name}
+		     , path = #{path}
+		 WHERE num = #{num}
+	</update>
+	
+	<update id="delete" parameterType="int">
+		DELETE
+		  FROM board_file
+		 WHERE num = #{num}
+	</update>
+
+</mapper>

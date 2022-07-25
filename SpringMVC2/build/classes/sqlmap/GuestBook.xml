@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="Product">	
+	
+	<insert id="insert" parameterClass="Message" >
+		insert into GUESTBOOK_MESSAGE values (seq_log.nextval, #guestName#, #content#)		
+	</insert>
+	
+	<select id="selectCount" resultClass="int">
+		select count(*) from GUESTBOOK_MESSAGE
+	</select>
+	
+	<select id="selectList" resultClass="Message" parameterClass="map">
+		<![CDATA[
+		select * from (select rownum numrow, A.* from(select * from GUESTBOOK_MESSAGE)A) 
+		where numrow >= #startRow# and numrow <= #fetchSize# order by GUESTBOOK_MESSAGE_ID desc
+		]]>
+	</select>
+
+</sqlMap>

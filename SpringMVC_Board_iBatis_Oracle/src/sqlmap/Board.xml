@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="Board">
+	<typeAlias alias="BoardVO" type="dao.BoardVO" />
+	<typeAlias alias="PageVO" type="dao.PageVO" />
+	
+	<parameterMap id="boardParamMap" class="BoardVO">
+		<parameter property="num"  />
+	</parameterMap>
+				
+	<resultMap id="boardResultMap" class="BoardVO">
+		<result property="num" column="num" />
+		<result property="writer" column="writer" />
+		<result property="email" column="email" />		
+		<result property="subject" column="subject" />		
+		<result property="passwd" column="passwd" />
+		<result property="reg_date" column="reg_date" />
+		<result property="readcount" column="readcount" />
+		<result property="ref" column="ref" />
+		<result property="re_step" column="re_step" />
+		<result property="re_level" column="re_level" />
+		<result property="content" column="content" />
+		<result property="ip" column="ip" />
+	</resultMap>
+	<resultMap id="pageResultMap" class="pageVO">
+		<result property="startRow" column="startRow" />
+		<result property="pageSize" column="pageSize" />
+	</resultMap>
+	
+	<select id="getArticles" resultMap="boardResultMap">
+		<![CDATA[
+	    	select * from (select rownum numrow, A.* from(select * from board)A) where numrow > #startRow# and numrow <= #pageNum#*#pageSize# order by ref desc, re_step asc, num asc
+		]]>
+	</select>
+	
+	<insert id="insertArticle">
+		insert into board(num,writer,email,subject,passwd,reg_date,readcount,ref,re_step,re_level,content,ip)
+			values(seq_log.nextval,#writer#,#email#,#subject#,#passwd#,#reg_date#,#readcount#,#ref#,#re_step#,#re_level#,#content#,#ip#)
+	</insert>
+	
+	<select id="getMaxBoard" resultClass="int">
+		select max(num) from board
+	</select>	
+	
+	<update id="updateStepArticle">
+		update board set re_step=re_step+1 where ref=#ref# and re_step>#re_step#
+	</update>
+	
+	<select id="getArticleCount" resultClass="int">
+		select count(*) from board
+	</select>
+	
+	<select id="getArticle" resultClass="BoardVO">
+		select * from board where num = #num#
+	</select>
+	
+	<update id="updateReadcountArticle">
+		update board set readcount=readcount+1 where num = #num#
+	</update>
+	
+	<update id="updateArticle">
+		update board set writer=#writer#,email=#email#,subject=#subject#,passwd=#passwd#,content=#content# where num=#num#
+	</update>
+	
+	<delete id="deleteArticle" >
+		delete from board where num=#num#
+	</delete>
+	
+</sqlMap>
